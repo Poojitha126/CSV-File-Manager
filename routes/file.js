@@ -5,6 +5,8 @@ const fs = require('fs');
 const router= express.Router();
 const Netfilx = require('../model/file');
 const aqp = require('api-query-params');
+const { deleteOne } = require('../model/file');
+const { info } = require('console');
 
 
 
@@ -74,6 +76,46 @@ router.get("/:field",async function(req,res){
     })
   }
 })
+router.get('/find',async function(req,res){
+  const { filter } = aqp(req.query);
+  // filter={"$and":[{"key1":"value1"},{"key2":"value2"},{"key3":"value3"},{"key4":"value4"}]}
+  const data = await Netfilx.find(filter).exec((err, data) => {
+      if (err) {
+        res.json({
+            status:"failed"
+        })
+      }
+
+      res.json({
+          status:"success",
+          data:{
+              data
+          }
+      });
+    });
+});
+router.delete('/find',async function(req,res){
+  const { filter } = aqp(req.query);
+  const data = await Netfilx.find(filter).exec((err, data) => {
+            if (err) {
+              res.json({
+                  status:"failed"
+              })
+            }
+            if (data.length){
+              data.map(async parameter=>{
+                console.log(parameter._id,parameter.title)
+                await Netfilx.deleteOne({_id:info._id})
+              })
+            }
+            res.json({
+                status:"success",
+                
+            });
+          
+      });
+      
+    });
 
 
 module.exports=router;
