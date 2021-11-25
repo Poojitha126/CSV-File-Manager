@@ -40,6 +40,40 @@ router.post('/', upload.single('file'), function (req, res) {
 
 });
 
+router.get("/",async function(req,res){
+  try{
+    const data= await Netfilx.find();
+  res.json({
+    status:"success",
+    data:data
+
+  })
+  }catch(e){
+    res.json({
+      status:"failed",
+      message:e.message
+  
+    })
+  }
+  
+})
+router.get("/:field",async function(req,res){
+  try{
+    const  field=req.params.field
+    const data= await Netfilx.find({},field);
+  res.json({
+    status:"success",
+    data:data
+
+  })
+  }catch(e){
+    res.json({
+      status:"failed",
+      message:e.message
+  
+    })
+  }
+})
 
 
 module.exports=router;
